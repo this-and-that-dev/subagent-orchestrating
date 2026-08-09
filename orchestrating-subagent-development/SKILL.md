@@ -94,16 +94,19 @@ Explorer는 기본적으로 read-only다. 코드를 수정하지 않고 다음�
 
 Implementer에게는 다음 정보만 명확하게 제공한다.
 
+- 소유 파일과 수정이 허용된 범위
 - 담당 범위
 - 구체적인 목표
 - 관련 파일과 interface
 - 반드시 지켜야 할 제약사항
-- 필요한 검증 방법
+- 실행할 검증 명령과 성공 기준
 
 현재 작업과 관계없는 긴 대화 기록이나 불필요한 컨텍스트를 전달하지 않는다.
 
 같은 파일을 수정하거나 shared mutable state에 의존하는 implementation agent를 동시에 실행하지 않는다.
 명확하게 독립적인 workstream일 때만 병렬 구현을 허용한다.
+Coordinator만 agent 분배, 병렬 실행 결정, 파일 소유권 충돌 해결을 수행한다.
+소유 파일이 겹치거나 의존 순서가 확정되지 않으면 구현을 병렬화하지 않는다.
 
 권장 모델: `gpt-5.6-terra`, reasoning `medium`.
 
@@ -119,6 +122,8 @@ Tester의 책임:
 - targeted test 실행
 - 실패 원인 분석
 - 요청된 동작과 실제 구현이 일치하는지 확인
+
+Tester가 파일을 수정할 때도 Coordinator가 소유 파일과 범위를 배정한다.
 
 권장 모델: `gpt-5.6-luna`, reasoning `medium`.
 
@@ -146,14 +151,21 @@ Tester의 책임:
 
 Test 또는 review에서 수정 가능한 문제가 발견되면 사용자에게 조정 역할을 요구하지 않는다.
 
-자동으로 다음 과정을 수행한다.
+하나의 finding 묶음에 대해서 자동 수정 루프는 **최대 두 번**만 수행한다.
 
 1. 발견된 문제를 implementer에게 전달한다.
 2. 수정한다.
 3. 관련 test를 다시 실행한다.
 4. 수정된 범위를 다시 review한다.
 
-같은 implementer가 반복해서 해결하지 못하면 작업 범위를 더 작게 나누거나 한 단계 높은 모델로 escalation한다.
+두 번째 루프 뒤에도 문제가 남으면 더 이상 자동으로 수정하지 않는다. Coordinator는 다음을 포함한 중단 보고를 작성하고 사용자 결정을 요청한다.
+
+- 남은 문제와 추정 원인
+- 시도한 변경과 담당 agent
+- 실행한 test/review 명령과 결과
+- 추가 진행에 필요한 선택 또는 context
+
+첫 번째 루프에서 해결되지 않았을 때는 작업 범위를 더 작게 나누거나 한 단계 높은 모델로 escalation할 수 있다.
 
 다음과 같은 경우에만 사용자에게 질문한다.
 
@@ -166,6 +178,7 @@ Test 또는 review에서 수정 가능한 문제가 발견되면 사용자에게
 ### 7. Final Verification
 
 최종 결과에 대한 책임은 항상 메인 agent에게 있다.
+Coordinator만 최종 검증과 사용자 보고를 수행한다.
 완료했다고 보고하기 전에 다음을 확인한다.
 
 - 통합된 최종 diff를 직접 확인한다.
@@ -173,6 +186,19 @@ Test 또는 review에서 수정 가능한 문제가 발견되면 사용자에게
 - 여러 subagent의 변경이 서로 충돌하지 않는지 확인한다.
 - 사용자가 요청한 요구사항이 빠지지 않았는지 확인한다.
 - 실제로 변경한 내용과 검증 결과를 최종 보고한다.
+
+## Handoff 결과 형식
+
+Explorer, architect, tester, reviewer와 implementer는 결과를 다음 형식으로 Coordinator에게 전달한다.
+
+1. **요약과 결론**: 확인하거나 변경한 내용과 결론
+2. **근거**: 관련 파일·symbol 또는 실행한 명령과 결과
+3. **범위**: 조사·변경·검증한 파일 목록
+4. **위험 또는 미해결 항목**: 불확실한 가정, 실패, 후속 위험
+5. **다음 단계 권고**: 진행·수정·재검증·중단 중 권장 행동
+
+읽기 전용 역할은 파일을 수정, stage, commit하지 않는다.
+보고에 필요한 정보가 부족하면 Coordinator는 작업을 재할당하기 전에 누락 정보를 보완한다.
 
 ## Agent 선택 규칙
 
@@ -189,7 +215,7 @@ Test 또는 review에서 수정 가능한 문제가 발견되면 사용자에게
 |---|---|---|
 | Explorer | `gpt-5.6-terra` | `low` |
 | Architect | `gpt-5.6-sol` | `high` |
-| Backend / Frontend | `gpt-5.6-terra` | `medium` |
+| Backend / Frontend / Implementer | `gpt-5.6-terra` | `medium` |
 | 단순 기계적 구현 | `gpt-5.6-luna` | `low` 또는 `medium` |
 | Tester | `gpt-5.6-luna` | `medium` |
 | 일반 Reviewer | `gpt-5.6-terra` | `medium` |
