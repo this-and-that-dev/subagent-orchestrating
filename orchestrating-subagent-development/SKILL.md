@@ -71,7 +71,7 @@ Explorer는 기본적으로 read-only다. 코드를 수정하지 않고 다음�
 
 서로 독립적인 영역이라면 여러 read-only explorer를 병렬 실행할 수 있다.
 
-권장 모델: `gpt-5.6-terra`, reasoning `low`.
+권장 모델: `gpt-6.1-sol`, reasoning `low`.
 
 ### 2. 필요한 경우에만 Design
 
@@ -85,7 +85,7 @@ Explorer는 기본적으로 read-only다. 코드를 수정하지 않고 다음�
 
 일반적인 기능 구현이나 명확한 수정에는 architect를 생략한다.
 
-권장 모델: `gpt-5.6-sol`, reasoning `high`.
+권장 모델: `gpt-6.1-sol`, reasoning `high`.
 
 ### 3. Implement
 
@@ -108,9 +108,9 @@ Implementer에게는 다음 정보만 명확하게 제공한다.
 Coordinator만 agent 분배, 병렬 실행 결정, 파일 소유권 충돌 해결을 수행한다.
 소유 파일이 겹치거나 의존 순서가 확정되지 않으면 구현을 병렬화하지 않는다.
 
-권장 모델: `gpt-5.6-terra`, reasoning `medium`.
+권장 모델: `gpt-6.1-sol`, reasoning `medium`.
 
-작업 내용이 완전히 명확하고 반복적인 기계적 수정이라면 `gpt-5.6-luna`와 reasoning `low` 또는 `medium`을 사용할 수 있다.
+작업 내용이 완전히 명확하고 반복적인 기계적 수정이라면 `gpt-6-luna`와 reasoning `low` 또는 `medium`을 사용할 수 있다.
 
 ### 4. Test
 
@@ -125,9 +125,9 @@ Tester의 책임:
 
 Tester가 파일을 수정할 때도 Coordinator가 소유 파일과 범위를 배정한다.
 
-권장 모델: `gpt-5.6-luna`, reasoning `medium`.
+권장 모델: `gpt-6-luna`, reasoning `medium`.
 
-테스트 실패 원인이 단순하지 않고 실제 debugging이나 module 간 분석이 필요하면 `gpt-5.6-terra`로 올린다.
+테스트 실패 원인이 단순하지 않고 실제 debugging이나 module 간 분석이 필요하면 `gpt-6.1-sol`로 올린다.
 
 ### 5. Review
 
@@ -144,8 +144,8 @@ Tester가 파일을 수정할 때도 Coordinator가 소유 파일과 범위를 �
 - 불필요한 복잡성
 - 다른 module에 미치는 부작용
 
-변경 범위가 크거나 위험도가 높으면 `gpt-5.6-sol`, reasoning `high`를 사용한다.
-일반적인 저위험 diff는 `gpt-5.6-terra`, reasoning `medium`으로 충분하다.
+변경 범위가 크거나 위험도가 높으면 `gpt-6.1-sol`, reasoning `high`를 사용한다.
+일반적인 저위험 diff는 `gpt-6.1-sol`, reasoning `medium`으로 충분하다.
 
 ### 6. Fix Loop
 
@@ -213,13 +213,13 @@ Explorer, architect, tester, reviewer와 implementer는 결과를 다음 형식�
 
 | 역할 | 기본 모델 | Reasoning |
 |---|---|---|
-| Explorer | `gpt-5.6-terra` | `low` |
-| Architect | `gpt-5.6-sol` | `high` |
-| Backend / Frontend / Implementer | `gpt-5.6-terra` | `medium` |
-| 단순 기계적 구현 | `gpt-5.6-luna` | `low` 또는 `medium` |
-| Tester | `gpt-5.6-luna` | `medium` |
-| 일반 Reviewer | `gpt-5.6-terra` | `medium` |
-| 중요/고위험 Reviewer | `gpt-5.6-sol` | `high` |
+| Explorer | `gpt-6.1-sol` | `low` |
+| Architect | `gpt-6.1-sol` | `high` |
+| Backend / Frontend / Implementer | `gpt-6.1-sol` | `medium` |
+| 단순 기계적 구현 | `gpt-6-luna` | `low` 또는 `medium` |
+| Tester | `gpt-6-luna` | `medium` |
+| 일반 Reviewer | `gpt-6.1-sol` | `medium` |
+| 중요/고위험 Reviewer | `gpt-6.1-sol` | `high` |
 
 custom agent 설정에서 별도 모델이 명시되어 있고 해당 역할에 적절하다면 그 설정을 우선할 수 있다.
 

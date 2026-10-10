@@ -1,7 +1,7 @@
 name = "implementer"
 description = "역할 전용 에이전트가 없을 때 제한된 범위의 구현을 수행한다."
 
-model = "gpt-5.6-terra"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "medium"
 
 developer_instructions = """

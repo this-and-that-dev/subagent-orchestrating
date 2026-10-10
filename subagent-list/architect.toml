@@ -1,7 +1,7 @@
 name = "architect"
 description = "기능 요구사항을 분석하고 구현 계획과 아키텍처를 설계한다."
 
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 
 developer_instructions = """

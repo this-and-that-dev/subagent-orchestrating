@@ -1,7 +1,7 @@
 name = "explorer"
 description = "코드베이스를 조사하고 관련 코드를 찾는다."
 
-model = "gpt-5.6-terra"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "low"
 
 developer_instructions = """

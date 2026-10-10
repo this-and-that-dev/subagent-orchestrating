@@ -1,7 +1,7 @@
 name = "high-risk-reviewer"
 description = "보안, 인증, 결제, 데이터베이스 변경을 고강도로 검토한다."
 
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
 
 developer_instructions = """

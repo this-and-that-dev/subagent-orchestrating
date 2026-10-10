@@ -32,7 +32,7 @@ Codex 개발 요청에서 subagent를 언제 사용하고 어떤 역할과 모�
 | `high-risk-reviewer` | sol / high | 보안·인증·DB·결제 등 고위험 변경 리뷰 |
 | `commit` | luna / low | 요청된 파일만 stage·commit |
 
-`gpt-5.6-sol`은 최고 성능, `gpt-5.6-terra`는 성능과 비용의 균형, `gpt-5.6-luna`는 고처리량 작업을 위한 모델로 사용한다. [공식 모델 가이드](https://developers.openai.com/api/docs/guides/latest-model)
+`gpt-6.1-sol`은 최고 성능, `gpt-6.1-sol`는 성능과 비용의 균형, `gpt-6-luna`는 고처리량 작업을 위한 모델로 사용한다. [공식 모델 가이드](https://developers.openai.com/api/docs/guides/latest-model)
 
 ## 운영 규칙
 
